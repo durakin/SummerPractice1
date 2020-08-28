@@ -53,9 +53,9 @@ namespace SummerPractice1.Main
         private static string AllProductsToString(List<Product> products)
         {
             var result = "";
-            foreach (var VARIABLE in products)
+            foreach (var i in products)
             {
-                result += VARIABLE.ToString();
+                result += i.ToString();
             }
 
             return result;
@@ -66,24 +66,24 @@ namespace SummerPractice1.Main
             && intToCheck <= (int) OperationCodes.Quit;
 
         private static bool AddMenuInputChecker(int intToCheck) =>
-            intToCheck >= (int) OperationCodes.AddOrder
-            && intToCheck <= (int) OperationCodes.AddBack;
+            intToCheck >= (int) AddSuboperationCodes.AddOrder
+            && intToCheck <= (int) AddSuboperationCodes.AddBack;
 
         private static bool PrintMenuInputChecker(int intToCheck) =>
-            intToCheck >= (int) OperationCodes.PrintOrders
-            && intToCheck <= (int) OperationCodes.PrintBack;
+            intToCheck >= (int) PrintSuboperationCodes.PrintOrders
+            && intToCheck <= (int) PrintSuboperationCodes.PrintBack;
 
         private static bool DeleteMenuInputChecker(int intToCheck) =>
-            intToCheck >= (int) OperationCodes.DeleteOrder
-            && intToCheck <= (int) OperationCodes.DeleteBack;
+            intToCheck >= (int) DeleteSuboperationCodes.DeleteOrder
+            && intToCheck <= (int) DeleteSuboperationCodes.DeleteBack;
 
         private static bool SortOrdersMenuInputChecker(int intToCheck) =>
-            intToCheck >= (int) OperationCodes.SortOrdersOrd
-            && intToCheck <= (int) OperationCodes.SortOrdersBack;
+            intToCheck >= (int) SortOrdersSuboperationCodes.SortOrdersOrd
+            && intToCheck <= (int) SortOrdersSuboperationCodes.SortOrdersBack;
 
         private static bool SortProductsMenuInputChecker(int intToCheck) =>
-            intToCheck >= (int) OperationCodes.SortProductsPrice
-            && intToCheck <= (int) OperationCodes.SortProductsBack;
+            intToCheck >= (int) SortProductsSuboperationCodes.SortProductsPrice
+            && intToCheck <= (int) SortProductsSuboperationCodes.SortProductsBack;
 
         private static bool PositiveIntInputChecker(int intToCheck) => intToCheck >= 0;
 
@@ -95,86 +95,128 @@ namespace SummerPractice1.Main
 
             while (operationCode != OperationCodes.Quit)
             {
-                Console.Write("\n1. Load data from savefile.\n" +
-                              "2. Save current data to savefile.\n" +
-                              "3. Add new element.\n" +
-                              "4. Print information.\n" +
-                              "5. Delete elements.\n" +
-                              "6. Sort orders.\n" +
-                              "7. Sort products.\n" +
-                              "8. Quit without saving.\n\n");
+                Console.WriteLine();
+                Console.WriteLine("1. Load data from savefile.");
+                Console.WriteLine("2. Save current data to savefile.");
+                Console.WriteLine("3. Add new element.");
+                Console.WriteLine("4. Print information.");
+                Console.WriteLine("5. Delete elements.");
+                Console.WriteLine("6. Sort orders.");
+                Console.WriteLine("7. Sort products.");
+                Console.WriteLine("8. Quit without saving.");
+                Console.WriteLine();
 
                 operationCode = (OperationCodes) CustomIntInput(MainMenuInputChecker);
 
-                var suboperationCode = 0;
                 switch (operationCode)
                 {
-                    case  OperationCodes.Add:
+                    case OperationCodes.Add:
                     {
-                        /*if (suboperationCode == (int) OperationCodes.AddOrder)
-                    {
-                        Console.WriteLine("Enter ");
-                    }
-                    */
-                        Console.Write("\n1. Add order." +
-                                      "\n2. Add product." +
-                                      "\n3. Add relation." +
-                                      "\n4. Back.\n");
-                        suboperationCode = CustomIntInput(AddMenuInputChecker);
-                        if (suboperationCode == (int) OperationCodes.AddProduct)
+                        Console.WriteLine();
+                        Console.WriteLine("1. Add order.");
+                        Console.WriteLine("2. Add product.");
+                        Console.WriteLine("3. Add relation.");
+                        Console.WriteLine("4. Back.");
+                        Console.WriteLine();
+
+                        var suboperationCode = (AddSuboperationCodes) CustomIntInput(AddMenuInputChecker);
+
+                        switch (suboperationCode)
                         {
-                            Console.WriteLine("Enter product's name");
-                            var name = Console.ReadLine();
-                            Console.WriteLine("Enter product's price");
-                            var price = CustomIntInput(PositiveIntInputChecker);
-                            Console.WriteLine("Enter product's weight");
-                            var weight = CustomIntInput(PositiveIntInputChecker);
-                            AddProduct(Products, name, price, weight);
+                            case AddSuboperationCodes.AddProduct:
+                            {
+                                Console.WriteLine("Enter product's name");
+                                var name = Console.ReadLine();
+                                Console.WriteLine("Enter product's price");
+                                var price = CustomIntInput(PositiveIntInputChecker);
+                                Console.WriteLine("Enter product's weight");
+                                var weight = CustomIntInput(PositiveIntInputChecker);
+                                AddProduct(Products, name, price, weight);
+                                break;
+                            }
+                            case AddSuboperationCodes.AddOrder:
+                                throw new NotImplementedException();
+                            case AddSuboperationCodes.AddRelation:
+                                throw new NotImplementedException();
+                            case AddSuboperationCodes.AddBack:
+                                throw new NotImplementedException();
+                            default:
+                                throw new ArgumentOutOfRangeException();
                         }
 
                         break;
                     }
                     case OperationCodes.Print:
                     {
-                        suboperationCode = CustomIntInput(PrintMenuInputChecker);
-                        Console.Write("\n1. Print all orders." +
-                                      "\n2. Print all products." +
-                                      "\n3. Print order's content." +
-                                      "\n4. Print product's related" +
-                                      "orders.\n5. Back.\n");
-                        if (suboperationCode == (int) OperationCodes.PrintProducts)
+                        Console.WriteLine();
+                        Console.WriteLine("1. Print all orders.");
+                        Console.WriteLine("2. Print all products.");
+                        Console.WriteLine("3. Print order's content.");
+                        Console.WriteLine("4. Print product's related orders.");
+                        Console.WriteLine("5. Back.");
+                        Console.WriteLine();
+
+                        var suboperationCode = (PrintSuboperationCodes) CustomIntInput(PrintMenuInputChecker);
+
+                        switch (suboperationCode)
                         {
-                            Console.WriteLine(AllProductsToString(Products));
+                            case PrintSuboperationCodes.PrintProducts:
+                            {
+                                Console.WriteLine(AllProductsToString(Products));
+                                break;
+                            }
+                            case PrintSuboperationCodes.PrintOrders:
+                                throw new NotImplementedException();
+                            case PrintSuboperationCodes.PrintByOrder:
+                                throw new NotImplementedException();
+                            case PrintSuboperationCodes.PrintByProduct:
+                                throw new NotImplementedException();
+                            case PrintSuboperationCodes.PrintBack:
+                                throw new NotImplementedException();
+                            default:
+                                throw new ArgumentOutOfRangeException();
                         }
 
                         break;
                     }
                     case OperationCodes.Delete:
                     {
-                        Console.Write("\n1. Delete order.\n" +
-                                      "2. Delete product.\n" +
-                                      "3.Back\n");
-                        suboperationCode = CustomIntInput(DeleteMenuInputChecker);
-                        if (suboperationCode == (int) OperationCodes.DeleteProduct)
+                        Console.WriteLine();
+                        Console.WriteLine("1. Delete order");
+                        Console.WriteLine("2. Delete product.");
+                        Console.WriteLine("3. Back");
+                        Console.WriteLine();
+
+                        var suboperationCode = (DeleteSuboperationCodes) CustomIntInput(DeleteMenuInputChecker);
+
+                        switch (suboperationCode)
                         {
-                            var name = Console.ReadLine();
-                            DeleteProduct(Products, Orders, name);
+                            case DeleteSuboperationCodes.DeleteOrder:
+                                throw new NotImplementedException();
+                            case DeleteSuboperationCodes.DeleteProduct:
+                                var name = Console.ReadLine();
+                                DeleteProduct(Products, Orders, name);
+                                break;
+                            case DeleteSuboperationCodes.DeleteBack:
+                                throw new NotImplementedException();
+                            default:
+                                throw new ArgumentOutOfRangeException();
                         }
 
                         break;
                     }
-                    case OperationCodes.None:
-                        break;
                     case OperationCodes.LoadFromFile:
-                        break;
+                        throw new NotImplementedException();
                     case OperationCodes.SaveToFile:
-                        break;
+                        throw new NotImplementedException();
                     case OperationCodes.SortOrders:
-                        break;
+                        throw new NotImplementedException();
                     case OperationCodes.SortProducts:
-                        break;
+                        throw new NotImplementedException();
                     case OperationCodes.Quit:
                         break;
+                    case OperationCodes.None:
+                        throw new ArgumentOutOfRangeException();
                     default:
                         throw new ArgumentOutOfRangeException();
                 }
