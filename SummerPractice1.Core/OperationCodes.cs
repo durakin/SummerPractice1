@@ -2,6 +2,7 @@
 {
     public enum OperationCodes
     {
+        None = -1,
         LoadFromFile = 1,
         SaveToFile = 2,
         Add = 3,
