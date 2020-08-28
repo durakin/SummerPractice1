@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-
 using SummerPractice1.Core;
 
 namespace SummerPractice1.Main
@@ -20,6 +19,22 @@ namespace SummerPractice1.Main
                 }
 
                 Console.WriteLine("Wrong format!");
+            }
+        }
+
+        private static DateTime CustomDateInput()
+        {
+            while (true)
+            {
+                try
+                {
+                    var result = DateTime.Parse(Console.ReadLine());
+                    return result;
+                }
+                catch (FormatException)
+                {
+                    Console.WriteLine("Wrong format!");
+                }
             }
         }
 
@@ -43,17 +58,57 @@ namespace SummerPractice1.Main
 
         private static void DeleteProduct(List<Product> products, List<Order> orders, string name)
         {
-            products.RemoveAll(u => u.Name == name);
+            if (products.RemoveAll(u => u.Name == name) == 0)
+            {
+                Console.WriteLine("No such product");
+                return;
+            }
             foreach (var i in orders)
             {
                 i.Content.RemoveAll(u => u.Name == name);
             }
+
+            Console.WriteLine("Deleted!");
         }
 
         private static string AllProductsToString(List<Product> products)
         {
             var result = "";
             foreach (var i in products)
+            {
+                result += i.ToString();
+            }
+
+            return result;
+        }
+
+        private static Order OrderByOwner(List<Order> orders, string owner)
+        {
+            return orders.Find(u => u.Owner == owner);
+        }
+
+        private static void AddOrder(List<Order> orders, string owner, DateTime orderDate, DateTime shipmentDate)
+        {
+            if (OrderByOwner(orders, owner) != null)
+            {
+                Console.WriteLine("Order with such owner already exists!");
+                return;
+            }
+
+            orders.Add(new Order(owner, orderDate, shipmentDate));
+            Console.WriteLine("Added!");
+        }
+
+        private static void DeleteOrder(List<Order> orders, string owner)
+        {
+            orders.RemoveAll(u => u.Owner == owner);
+            Console.WriteLine("Deleted!");
+        }
+
+        private static string AllOrdersToString(List<Order> orders)
+        {
+            var result = "";
+            foreach (var i in orders)
             {
                 result += i.ToString();
             }
@@ -135,11 +190,20 @@ namespace SummerPractice1.Main
                                 break;
                             }
                             case AddSuboperationCodes.AddOrder:
-                                throw new NotImplementedException();
+                            {
+                                Console.WriteLine("Enter owner's name");
+                                var owner = Console.ReadLine();
+                                Console.WriteLine("Enter date of order");
+                                var dateOfOrder = CustomDateInput();
+                                Console.WriteLine("Enter date of shipment");
+                                var dateOfShipment = CustomDateInput();
+                                AddOrder(Orders, owner, dateOfOrder, dateOfShipment);
+                                break;
+                            }
                             case AddSuboperationCodes.AddRelation:
                                 throw new NotImplementedException();
                             case AddSuboperationCodes.AddBack:
-                                throw new NotImplementedException();
+                                break;
                             default:
                                 throw new ArgumentOutOfRangeException();
                         }
@@ -166,13 +230,16 @@ namespace SummerPractice1.Main
                                 break;
                             }
                             case PrintSuboperationCodes.PrintOrders:
-                                throw new NotImplementedException();
+                            {
+                                Console.WriteLine(AllOrdersToString(Orders));
+                                break;
+                            }
                             case PrintSuboperationCodes.PrintByOrder:
                                 throw new NotImplementedException();
                             case PrintSuboperationCodes.PrintByProduct:
                                 throw new NotImplementedException();
                             case PrintSuboperationCodes.PrintBack:
-                                throw new NotImplementedException();
+                                break;
                             default:
                                 throw new ArgumentOutOfRangeException();
                         }
@@ -192,13 +259,19 @@ namespace SummerPractice1.Main
                         switch (suboperationCode)
                         {
                             case DeleteSuboperationCodes.DeleteOrder:
-                                throw new NotImplementedException();
+                            {
+                                Console.WriteLine("Enter order's owner");
+                                var owner = Console.ReadLine();
+                                DeleteOrder(Orders, owner);
+                                break;
+                            }
                             case DeleteSuboperationCodes.DeleteProduct:
+                                Console.WriteLine("Enter product's name");
                                 var name = Console.ReadLine();
                                 DeleteProduct(Products, Orders, name);
                                 break;
                             case DeleteSuboperationCodes.DeleteBack:
-                                throw new NotImplementedException();
+                                break;
                             default:
                                 throw new ArgumentOutOfRangeException();
                         }

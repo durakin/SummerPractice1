@@ -10,6 +10,13 @@ namespace SummerPractice1.Core
         public string Owner { get; set; }
         public DateTime ShipmentDate { get; set; }
 
+        public Order(string owner, DateTime orderDate, DateTime shipmentDate)
+        {
+            Content = new List<Product>();
+            Owner = owner;
+            OrderDate = orderDate;
+            ShipmentDate = shipmentDate;
+        }
         public override string ToString() =>
             $"Owner: {Owner}\nDate of order: {OrderDate}\nDate of shipment: {ShipmentDate}\n";
 
