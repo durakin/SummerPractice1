@@ -4,7 +4,7 @@ using SummerPractice1.Core;
 
 namespace SummerPractice1.Main
 {
-    internal class Program
+    internal static class Program
     {
         private static int CustomIntInput(Func<int, bool> inputCheck)
         {
@@ -38,7 +38,6 @@ namespace SummerPractice1.Main
             }
         }
 
-
         private static Product ProductByName(List<Product> products, string name)
         {
             return products.Find(u => u.Name == name);
@@ -63,6 +62,7 @@ namespace SummerPractice1.Main
                 Console.WriteLine("No such product");
                 return;
             }
+
             foreach (var i in orders)
             {
                 i.Content.RemoveAll(u => u.Name == name);
@@ -116,6 +116,72 @@ namespace SummerPractice1.Main
             return result;
         }
 
+        private static void AddRelation(List<Product> products, List<Order> orders, string productName, string orderOwner)
+        {
+            if (ProductByName(products, productName) == null)
+            {
+                Console.WriteLine("No such product!");
+                return;
+            }
+
+            if (OrderByOwner(orders, orderOwner) == null)
+            {
+                Console.WriteLine("No such order!");
+                return;
+            }
+
+            OrderByOwner(orders, orderOwner).Content.Add(ProductByName(products, productName));
+            Console.WriteLine("Added!");
+        }
+
+        private static void DeleteRelation(List<Product> products, List<Order> orders, string productName,
+            string orderOwner)
+        {
+            if (OrderByOwner(orders, orderOwner).Content.Remove(ProductByName(products, productName)))
+            {
+                Console.WriteLine("Deleted!");
+            }
+            else
+            {
+                Console.WriteLine("No such relation!");
+            }
+        }
+
+        private static string OrderContentToString(Order order)
+        {
+            var result = "";
+            if (order.Content.Count == 0)
+            {
+                result = "No products in order!";
+            }
+
+            foreach (var i in order.Content)
+            {
+                result += i + "\n";
+            }
+
+            return result;
+        }
+
+        private static string ProductReferencesToString(Product product, List<Order> orders)
+        {
+            var result = "";
+            foreach (var i in orders)
+            {
+                if (i.Content.Contains(product))
+                {
+                    result += i + "\n";
+                }
+            }
+
+            if (result == "")
+            {
+                result = "No references to product";
+            }
+
+            return result;
+        }
+        
         private static bool MainMenuInputChecker(int intToCheck) =>
             intToCheck >= (int) OperationCodes.LoadFromFile
             && intToCheck <= (int) OperationCodes.Quit;
@@ -201,7 +267,14 @@ namespace SummerPractice1.Main
                                 break;
                             }
                             case AddSuboperationCodes.AddRelation:
-                                throw new NotImplementedException();
+                            {
+                                Console.WriteLine("Enter product's name");
+                                var name = Console.ReadLine();
+                                Console.WriteLine("Enter owner's name");
+                                var owner = Console.ReadLine();
+                                AddRelation(Products, Orders, name, owner);
+                                break;
+                            }
                             case AddSuboperationCodes.AddBack:
                                 break;
                             default:
@@ -235,9 +308,19 @@ namespace SummerPractice1.Main
                                 break;
                             }
                             case PrintSuboperationCodes.PrintByOrder:
-                                throw new NotImplementedException();
+                            {
+                                Console.WriteLine("Enter owner's name");
+                                var owner = Console.ReadLine();
+                                Console.WriteLine(OrderContentToString(OrderByOwner(Orders, owner)));
+                                break;
+                            }
                             case PrintSuboperationCodes.PrintByProduct:
-                                throw new NotImplementedException();
+                            {
+                                Console.WriteLine("Enter product's name");
+                                var name = Console.ReadLine();
+                                Console.WriteLine(ProductReferencesToString(ProductByName(Products, name), Orders));
+                                break;
+                            }
                             case PrintSuboperationCodes.PrintBack:
                                 break;
                             default:
@@ -260,7 +343,7 @@ namespace SummerPractice1.Main
                         {
                             case DeleteSuboperationCodes.DeleteOrder:
                             {
-                                Console.WriteLine("Enter order's owner");
+                                Console.WriteLine("Enter owner's name");
                                 var owner = Console.ReadLine();
                                 DeleteOrder(Orders, owner);
                                 break;
