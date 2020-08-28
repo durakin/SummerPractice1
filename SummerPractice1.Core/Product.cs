@@ -1,13 +1,10 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
 
 namespace SummerPractice1.Core
 {
     public class Product
     {
-        public string Name;
-        public int Price;
-        public int Weight;
-
         public Product(string name, int price, int weight)
         {
             Name = name;
@@ -15,23 +12,13 @@ namespace SummerPractice1.Core
             Weight = weight;
         }
 
-        public override string ToString()
-        {
-            return
-                $"Product: {Name}\nPrice: {Price}\nWeight: {Weight}\n";
-        }
+        public string Name { get; set; }
+        public int Price { get; set; }
+        public int Weight { get; set; }
 
-        public List<Order> AllOrders(List<Order> objList)
-        {
-            var result = new List<Order>();
-            foreach (var order in objList)
-            {
-                if (order.Content.Contains(this))
-                {
-                    result.Add(order);
-                }
-            }
-            return result;
-        }
+        public override string ToString() => $"Product: {Name}\nPrice: {Price}\nWeight: {Weight}\n";
+
+        public IEnumerable<Order> AllOrders(IEnumerable<Order> objList) =>
+            objList.Where(order => order.Content.Contains(this));
     }
 }

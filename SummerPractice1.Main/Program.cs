@@ -1,16 +1,17 @@
 ﻿using System;
 using System.Collections.Generic;
+
 using SummerPractice1.Core;
 
 namespace SummerPractice1.Main
 {
-    class Program
+    internal class Program
     {
-        static int CustomIntInput(Func<int, bool> inputCheck)
+        private static int CustomIntInput(Func<int, bool> inputCheck)
         {
             while (true)
             {
-                if (int.TryParse(Console.ReadLine(), out var result))
+                if (Int32.TryParse(Console.ReadLine(), out var result))
                 {
                     if (inputCheck(result))
                     {
@@ -23,12 +24,12 @@ namespace SummerPractice1.Main
         }
 
 
-        static Product ProductByName(List<Product> products, string name)
+        private static Product ProductByName(List<Product> products, string name)
         {
             return products.Find(u => u.Name == name);
         }
 
-        static void AddProduct(List<Product> products, string name, int price, int weight)
+        private static void AddProduct(List<Product> products, string name, int price, int weight)
         {
             if (ProductByName(products, name) != null)
             {
@@ -40,7 +41,7 @@ namespace SummerPractice1.Main
             Console.WriteLine("Added!");
         }
 
-        static void DeleteProduct(List<Product> products, List<Order> orders, string name)
+        private static void DeleteProduct(List<Product> products, List<Order> orders, string name)
         {
             products.RemoveAll(u => u.Name == name);
             foreach (var i in orders)
@@ -49,7 +50,7 @@ namespace SummerPractice1.Main
             }
         }
 
-        static string AllProductsToString(List<Product> products)
+        private static string AllProductsToString(List<Product> products)
         {
             var result = "";
             foreach (var VARIABLE in products)
@@ -60,48 +61,33 @@ namespace SummerPractice1.Main
             return result;
         }
 
-        static bool MainMenuInputChecker(int intToCheck)
-        {
-            return intToCheck >= (int) OperationCodes.LoadFromFile
-                   && intToCheck <= (int) OperationCodes.Quit;
-        }
+        private static bool MainMenuInputChecker(int intToCheck) =>
+            intToCheck >= (int) OperationCodes.LoadFromFile
+            && intToCheck <= (int) OperationCodes.Quit;
 
-        static bool AddMenuInputChecker(int intToCheck)
-        {
-            return intToCheck >= (int) OperationCodes.AddOrder
-                   && intToCheck <= (int) OperationCodes.AddBack;
-        }
+        private static bool AddMenuInputChecker(int intToCheck) =>
+            intToCheck >= (int) OperationCodes.AddOrder
+            && intToCheck <= (int) OperationCodes.AddBack;
 
-        static bool PrintMenuInputChecker(int intToCheck)
-        {
-            return intToCheck >= (int) OperationCodes.PrintOrders
-                   && intToCheck <= (int) OperationCodes.PrintBack;
-        }
+        private static bool PrintMenuInputChecker(int intToCheck) =>
+            intToCheck >= (int) OperationCodes.PrintOrders
+            && intToCheck <= (int) OperationCodes.PrintBack;
 
-        static bool DeleteMenuInputChecker(int intToCheck)
-        {
-            return intToCheck >= (int) OperationCodes.DeleteOrder
-                   && intToCheck <= (int) OperationCodes.DeleteBack;
-        }
+        private static bool DeleteMenuInputChecker(int intToCheck) =>
+            intToCheck >= (int) OperationCodes.DeleteOrder
+            && intToCheck <= (int) OperationCodes.DeleteBack;
 
-        static bool SortOrdersMenuInputChecker(int intToCheck)
-        {
-            return intToCheck >= (int) OperationCodes.SortOrdersOrd
-                   && intToCheck <= (int) OperationCodes.SortOrdersBack;
-        }
+        private static bool SortOrdersMenuInputChecker(int intToCheck) =>
+            intToCheck >= (int) OperationCodes.SortOrdersOrd
+            && intToCheck <= (int) OperationCodes.SortOrdersBack;
 
-        static bool SortProductsMenuInputChecker(int intToCheck)
-        {
-            return intToCheck >= (int) OperationCodes.SortProductsPrice
-                   && intToCheck <= (int) OperationCodes.SortProductsBack;
-        }
+        private static bool SortProductsMenuInputChecker(int intToCheck) =>
+            intToCheck >= (int) OperationCodes.SortProductsPrice
+            && intToCheck <= (int) OperationCodes.SortProductsBack;
 
-        static bool PositiveIntInputChecker(int intToCheck)
-        {
-            return intToCheck >= 0;
-        }
+        private static bool PositiveIntInputChecker(int intToCheck) => intToCheck >= 0;
 
-        static void Main(string[] args)
+        private static void Main(string[] args)
         {
             var operationCode = 0;
             var suboperationCode = 0;

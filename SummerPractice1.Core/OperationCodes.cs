@@ -27,6 +27,6 @@
         SortProductsPrice = 1,
         SortProductsWeight = 2,
         SortProductsBack = 3,
-        Quit = 8,
+        Quit = 8
     }
 }
