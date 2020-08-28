@@ -5,14 +5,13 @@ namespace SummerPractice1.Core
 {
     public class Order
     {
-        public List<Product> Content { get; set; }
+        public List<Product> Content { get; } = new List<Product>();
         public DateTime OrderDate { get; set; }
         public string Owner { get; set; }
         public DateTime ShipmentDate { get; set; }
 
         public Order(string owner, DateTime orderDate, DateTime shipmentDate)
         {
-            Content = new List<Product>();
             Owner = owner;
             OrderDate = orderDate;
             ShipmentDate = shipmentDate;
