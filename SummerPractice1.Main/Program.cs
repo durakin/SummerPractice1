@@ -147,7 +147,7 @@ namespace SummerPractice1.Main
             }
         }
 
-        private static string OrderContentToString(Order order)
+        private static string OrderContentToString(Order order, List<Product> products)
         {
             var result = "";
             if (order.Content.Count == 0)
@@ -155,11 +155,13 @@ namespace SummerPractice1.Main
                 result = "No products in order!";
             }
 
-            foreach (var i in order.Content)
+            foreach (var i in products)
             {
-                result += i + "\n";
+                if (order.Content.Exists(u => u == i))
+                {
+                    result += i + "\n";
+                }
             }
-
             return result;
         }
 
@@ -311,7 +313,7 @@ namespace SummerPractice1.Main
                             {
                                 Console.WriteLine("Enter owner's name");
                                 var owner = Console.ReadLine();
-                                Console.WriteLine(OrderContentToString(OrderByOwner(Orders, owner)));
+                                Console.WriteLine(OrderContentToString(OrderByOwner(Orders, owner), Products));
                                 break;
                             }
                             case PrintSuboperationCodes.PrintByProduct:
@@ -366,13 +368,72 @@ namespace SummerPractice1.Main
                     case OperationCodes.SaveToFile:
                         throw new NotImplementedException();
                     case OperationCodes.SortOrders:
-                        throw new NotImplementedException();
+                    {
+                        Console.WriteLine();
+                        Console.WriteLine("1. Sort orders by order date");
+                        Console.WriteLine("2. Sort orders by shipment date");
+                        Console.WriteLine("3. Back");
+                        Console.WriteLine();
+                        var suboperationCode = (SortOrdersSuboperationCodes) CustomIntInput(SortOrdersMenuInputChecker);
+                        switch (suboperationCode)
+                        {
+                            case SortOrdersSuboperationCodes.SortOrdersOrd:
+                            {
+                                Orders.Sort((a, b) => DateTime.Compare(a.OrderDate, b.OrderDate));
+                                Console.WriteLine("Sorted!");
+                                break;
+                            }
+                            case SortOrdersSuboperationCodes.SortOrdersShip:
+                            {
+                                Orders.Sort((a, b) => DateTime.Compare(a.ShipmentDate, b.ShipmentDate));
+                                Console.WriteLine("Sorted!");
+                                break;
+                            }
+
+                            case SortOrdersSuboperationCodes.SortOrdersBack:
+                            {
+                                break;
+                            }
+                            default:
+                                throw new ArgumentOutOfRangeException();
+                        }
+                        break;
+                    }
                     case OperationCodes.SortProducts:
-                        throw new NotImplementedException();
+                    {
+                        Console.WriteLine();
+                        Console.WriteLine("1. Sort products by price");
+                        Console.WriteLine("2. Sort products by weight");
+                        Console.WriteLine("3. Back");
+                        Console.WriteLine();
+                        var suboperationCode = (SortProductsSuboperationCodes) CustomIntInput(SortOrdersMenuInputChecker);
+                        switch (suboperationCode)
+                        {
+                            case SortProductsSuboperationCodes.SortProductsPrice:
+                            {
+                                Products.Sort((a, b) => b.Price - a.Price);
+                                Console.WriteLine("Sorted!");
+                                break;
+                            }
+                            case SortProductsSuboperationCodes.SortProductsWeight:
+                            {
+                                Products.Sort((a, b) => b.Weight - a.Weight);
+                                Console.WriteLine("Sorted!");
+                                break;
+                            }
+                            case SortProductsSuboperationCodes.SortProductsBack:
+                            {
+                                break;
+                            }
+                            default:
+                                throw new ArgumentOutOfRangeException();
+                        }
+                        break;
+                    }
+                    
+                    
                     case OperationCodes.Quit:
                         break;
-                    case OperationCodes.None:
-                        throw new ArgumentOutOfRangeException();
                     default:
                         throw new ArgumentOutOfRangeException();
                 }
