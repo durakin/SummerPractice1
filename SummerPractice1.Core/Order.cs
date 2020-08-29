@@ -16,6 +16,17 @@ namespace SummerPractice1.Core
             OrderDate = orderDate;
             ShipmentDate = shipmentDate;
         }
+
+        public Order(OrderSave origin, List<Product> products)
+        {
+            Owner = origin.Owner;
+            OrderDate = origin.OrderDate;
+            ShipmentDate = origin.ShipmentDate;
+            foreach (var i in origin.Products)
+            {
+                Content.Add(products.Find(u => u.Name == i));
+            }
+        }
         public override string ToString() =>
             $"Owner: {Owner}\nDate of order: {OrderDate}\nDate of shipment: {ShipmentDate}\n";
 
