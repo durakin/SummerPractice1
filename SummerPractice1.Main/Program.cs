@@ -1,5 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
+
+using Newtonsoft.Json;
+
 using SummerPractice1.Core;
 
 namespace SummerPractice1.Main
@@ -116,7 +120,8 @@ namespace SummerPractice1.Main
             return result;
         }
 
-        private static void AddRelation(List<Product> products, List<Order> orders, string productName, string orderOwner)
+        private static void AddRelation(List<Product> products, List<Order> orders, string productName,
+            string orderOwner)
         {
             if (ProductByName(products, productName) == null)
             {
@@ -162,6 +167,7 @@ namespace SummerPractice1.Main
                     result += i + "\n";
                 }
             }
+
             return result;
         }
 
@@ -183,7 +189,7 @@ namespace SummerPractice1.Main
 
             return result;
         }
-        
+
         private static bool MainMenuInputChecker(int intToCheck) =>
             intToCheck >= (int) OperationCodes.LoadFromFile
             && intToCheck <= (int) OperationCodes.Quit;
@@ -364,9 +370,20 @@ namespace SummerPractice1.Main
                         break;
                     }
                     case OperationCodes.LoadFromFile:
-                        throw new NotImplementedException();
+                    {
+                        var filename = Console.ReadLine();
+                        using var sr = new StreamReader(filename);
+                        Orders = JsonConvert.DeserializeObject<List<Order>>(sr.ReadToEnd());
+                        break;
+                    }
                     case OperationCodes.SaveToFile:
-                        throw new NotImplementedException();
+                    {
+                        var filename = Console.ReadLine();
+                        using var sr = new StreamWriter(filename);
+                        var json = JsonConvert.SerializeObject(Orders);
+                        sr.WriteLine(json);
+                        break;
+                    }
                     case OperationCodes.SortOrders:
                     {
                         Console.WriteLine();
@@ -397,6 +414,7 @@ namespace SummerPractice1.Main
                             default:
                                 throw new ArgumentOutOfRangeException();
                         }
+
                         break;
                     }
                     case OperationCodes.SortProducts:
@@ -406,7 +424,8 @@ namespace SummerPractice1.Main
                         Console.WriteLine("2. Sort products by weight");
                         Console.WriteLine("3. Back");
                         Console.WriteLine();
-                        var suboperationCode = (SortProductsSuboperationCodes) CustomIntInput(SortOrdersMenuInputChecker);
+                        var suboperationCode =
+                            (SortProductsSuboperationCodes) CustomIntInput(SortOrdersMenuInputChecker);
                         switch (suboperationCode)
                         {
                             case SortProductsSuboperationCodes.SortProductsPrice:
@@ -428,10 +447,11 @@ namespace SummerPractice1.Main
                             default:
                                 throw new ArgumentOutOfRangeException();
                         }
+
                         break;
                     }
-                    
-                    
+
+
                     case OperationCodes.Quit:
                         break;
                     default:
