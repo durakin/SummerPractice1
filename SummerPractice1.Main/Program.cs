@@ -1,5 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
+using Newtonsoft.Json;
 using SummerPractice1.Core;
 
 namespace SummerPractice1.Main
@@ -116,7 +118,8 @@ namespace SummerPractice1.Main
             return result;
         }
 
-        private static void AddRelation(List<Product> products, List<Order> orders, string productName, string orderOwner)
+        private static void AddRelation(List<Product> products, List<Order> orders, string productName,
+            string orderOwner)
         {
             if (ProductByName(products, productName) == null)
             {
@@ -134,7 +137,7 @@ namespace SummerPractice1.Main
             Console.WriteLine("Added!");
         }
 
-        private static void DeleteRelation(List<Product> products, List<Order> orders, string productName,
+        /*private static void DeleteRelation(List<Product> products, List<Order> orders, string productName,
             string orderOwner)
         {
             if (OrderByOwner(orders, orderOwner).Content.Remove(ProductByName(products, productName)))
@@ -146,7 +149,7 @@ namespace SummerPractice1.Main
                 Console.WriteLine("No such relation!");
             }
         }
-
+        */
         private static string OrderContentToString(Order order, List<Product> products)
         {
             var result = "";
@@ -162,6 +165,7 @@ namespace SummerPractice1.Main
                     result += i + "\n";
                 }
             }
+
             return result;
         }
 
@@ -183,7 +187,7 @@ namespace SummerPractice1.Main
 
             return result;
         }
-        
+
         private static bool MainMenuInputChecker(int intToCheck) =>
             intToCheck >= (int) OperationCodes.LoadFromFile
             && intToCheck <= (int) OperationCodes.Quit;
@@ -213,8 +217,8 @@ namespace SummerPractice1.Main
         private static void Main(string[] args)
         {
             var operationCode = OperationCodes.None;
-            var Products = new List<Product>();
-            var Orders = new List<Order>();
+            var listOfProducts = new List<Product>();
+            var listOfOrders = new List<Order>();
 
             while (operationCode != OperationCodes.Quit)
             {
@@ -254,7 +258,7 @@ namespace SummerPractice1.Main
                                 var price = CustomIntInput(PositiveIntInputChecker);
                                 Console.WriteLine("Enter product's weight");
                                 var weight = CustomIntInput(PositiveIntInputChecker);
-                                AddProduct(Products, name, price, weight);
+                                AddProduct(listOfProducts, name, price, weight);
                                 break;
                             }
                             case AddSuboperationCodes.AddOrder:
@@ -265,7 +269,7 @@ namespace SummerPractice1.Main
                                 var dateOfOrder = CustomDateInput();
                                 Console.WriteLine("Enter date of shipment");
                                 var dateOfShipment = CustomDateInput();
-                                AddOrder(Orders, owner, dateOfOrder, dateOfShipment);
+                                AddOrder(listOfOrders, owner, dateOfOrder, dateOfShipment);
                                 break;
                             }
                             case AddSuboperationCodes.AddRelation:
@@ -274,7 +278,7 @@ namespace SummerPractice1.Main
                                 var name = Console.ReadLine();
                                 Console.WriteLine("Enter owner's name");
                                 var owner = Console.ReadLine();
-                                AddRelation(Products, Orders, name, owner);
+                                AddRelation(listOfProducts, listOfOrders, name, owner);
                                 break;
                             }
                             case AddSuboperationCodes.AddBack:
@@ -301,26 +305,26 @@ namespace SummerPractice1.Main
                         {
                             case PrintSuboperationCodes.PrintProducts:
                             {
-                                Console.WriteLine(AllProductsToString(Products));
+                                Console.WriteLine(AllProductsToString(listOfProducts));
                                 break;
                             }
                             case PrintSuboperationCodes.PrintOrders:
                             {
-                                Console.WriteLine(AllOrdersToString(Orders));
+                                Console.WriteLine(AllOrdersToString(listOfOrders));
                                 break;
                             }
                             case PrintSuboperationCodes.PrintByOrder:
                             {
                                 Console.WriteLine("Enter owner's name");
                                 var owner = Console.ReadLine();
-                                Console.WriteLine(OrderContentToString(OrderByOwner(Orders, owner), Products));
+                                Console.WriteLine(OrderContentToString(OrderByOwner(listOfOrders, owner), listOfProducts));
                                 break;
                             }
                             case PrintSuboperationCodes.PrintByProduct:
                             {
                                 Console.WriteLine("Enter product's name");
                                 var name = Console.ReadLine();
-                                Console.WriteLine(ProductReferencesToString(ProductByName(Products, name), Orders));
+                                Console.WriteLine(ProductReferencesToString(ProductByName(listOfProducts, name), listOfOrders));
                                 break;
                             }
                             case PrintSuboperationCodes.PrintBack:
@@ -347,13 +351,13 @@ namespace SummerPractice1.Main
                             {
                                 Console.WriteLine("Enter owner's name");
                                 var owner = Console.ReadLine();
-                                DeleteOrder(Orders, owner);
+                                DeleteOrder(listOfOrders, owner);
                                 break;
                             }
                             case DeleteSuboperationCodes.DeleteProduct:
                                 Console.WriteLine("Enter product's name");
                                 var name = Console.ReadLine();
-                                DeleteProduct(Products, Orders, name);
+                                DeleteProduct(listOfProducts, listOfOrders, name);
                                 break;
                             case DeleteSuboperationCodes.DeleteBack:
                                 break;
@@ -364,9 +368,52 @@ namespace SummerPractice1.Main
                         break;
                     }
                     case OperationCodes.LoadFromFile:
-                        throw new NotImplementedException();
+                    {
+                        listOfProducts.Clear();
+                        listOfOrders.Clear();
+                        Console.WriteLine("Enter file name");
+                        var filename = Console.ReadLine();
+                        try
+                        {
+                            using var sr = new StreamReader(filename);
+                            var loaded = JsonConvert.DeserializeObject<SaveData>(sr.ReadToEnd());
+                            listOfProducts = loaded.Products;
+                            foreach (var i in loaded.Orders)
+                            {
+                                listOfOrders.Add(new Order(i, listOfProducts));
+                            }
+                            Console.WriteLine("Loaded!");
+                        }
+                        catch (Exception)
+                        {
+                            Console.WriteLine("Error occured!");
+                        }
+                        break;
+                    }
                     case OperationCodes.SaveToFile:
-                        throw new NotImplementedException();
+                    {
+                        Console.WriteLine("Enter file name");
+                        var filename = Console.ReadLine();
+                        try
+                        {
+                            using var sr = new StreamWriter(filename);
+                            List<OrderSave> ordersSaveData = new List<OrderSave>();
+                            foreach (var i in listOfOrders)
+                            {
+                                ordersSaveData.Add(new OrderSave(i));
+                            }
+                            var json = JsonConvert.SerializeObject(new SaveData(listOfProducts, ordersSaveData));
+                            sr.WriteLine(json);
+                            Console.WriteLine("Saved!");
+                            
+                        }
+                        catch (Exception)
+                        {
+                            Console.WriteLine("Error occured!");
+                        }
+
+                        break;
+                    }
                     case OperationCodes.SortOrders:
                     {
                         Console.WriteLine();
@@ -379,13 +426,13 @@ namespace SummerPractice1.Main
                         {
                             case SortOrdersSuboperationCodes.SortOrdersOrd:
                             {
-                                Orders.Sort((a, b) => DateTime.Compare(a.OrderDate, b.OrderDate));
+                                listOfOrders.Sort((a, b) => DateTime.Compare(a.OrderDate, b.OrderDate));
                                 Console.WriteLine("Sorted!");
                                 break;
                             }
                             case SortOrdersSuboperationCodes.SortOrdersShip:
                             {
-                                Orders.Sort((a, b) => DateTime.Compare(a.ShipmentDate, b.ShipmentDate));
+                                listOfOrders.Sort((a, b) => DateTime.Compare(a.ShipmentDate, b.ShipmentDate));
                                 Console.WriteLine("Sorted!");
                                 break;
                             }
@@ -397,6 +444,7 @@ namespace SummerPractice1.Main
                             default:
                                 throw new ArgumentOutOfRangeException();
                         }
+
                         break;
                     }
                     case OperationCodes.SortProducts:
@@ -406,18 +454,19 @@ namespace SummerPractice1.Main
                         Console.WriteLine("2. Sort products by weight");
                         Console.WriteLine("3. Back");
                         Console.WriteLine();
-                        var suboperationCode = (SortProductsSuboperationCodes) CustomIntInput(SortOrdersMenuInputChecker);
+                        var suboperationCode =
+                            (SortProductsSuboperationCodes) CustomIntInput(SortProductsMenuInputChecker);
                         switch (suboperationCode)
                         {
                             case SortProductsSuboperationCodes.SortProductsPrice:
                             {
-                                Products.Sort((a, b) => b.Price - a.Price);
+                                listOfProducts.Sort((a, b) => b.Price - a.Price);
                                 Console.WriteLine("Sorted!");
                                 break;
                             }
                             case SortProductsSuboperationCodes.SortProductsWeight:
                             {
-                                Products.Sort((a, b) => b.Weight - a.Weight);
+                                listOfProducts.Sort((a, b) => b.Weight - a.Weight);
                                 Console.WriteLine("Sorted!");
                                 break;
                             }
@@ -428,11 +477,12 @@ namespace SummerPractice1.Main
                             default:
                                 throw new ArgumentOutOfRangeException();
                         }
+
                         break;
                     }
-                    
-                    
                     case OperationCodes.Quit:
+                        break;
+                    case OperationCodes.None:
                         break;
                     default:
                         throw new ArgumentOutOfRangeException();

@@ -11,4 +11,8 @@
       <ProjectReference Include="..\SummerPractice1.Core\SummerPractice1.Core.csproj" />
     </ItemGroup>
 
+    <ItemGroup>
+      <PackageReference Include="Newtonsoft.Json" Version="12.0.3" />
+    </ItemGroup>
+
 </Project>
