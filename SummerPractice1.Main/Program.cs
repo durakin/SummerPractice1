@@ -45,6 +45,7 @@ namespace SummerPractice1.Main
             return products.Find(u => u.Name == name);
         }
 
+
         private static void AddProduct(List<Product> products, string name, int price, int weight)
         {
             if (ProductByName(products, name) != null)
@@ -137,19 +138,7 @@ namespace SummerPractice1.Main
             Console.WriteLine("Added!");
         }
 
-        /*private static void DeleteRelation(List<Product> products, List<Order> orders, string productName,
-            string orderOwner)
-        {
-            if (OrderByOwner(orders, orderOwner).Content.Remove(ProductByName(products, productName)))
-            {
-                Console.WriteLine("Deleted!");
-            }
-            else
-            {
-                Console.WriteLine("No such relation!");
-            }
-        }
-        */
+
         private static string OrderContentToString(Order order, List<Product> products)
         {
             var result = "";
@@ -317,14 +306,16 @@ namespace SummerPractice1.Main
                             {
                                 Console.WriteLine("Enter owner's name");
                                 var owner = Console.ReadLine();
-                                Console.WriteLine(OrderContentToString(OrderByOwner(listOfOrders, owner), listOfProducts));
+                                Console.WriteLine(OrderContentToString(OrderByOwner(listOfOrders, owner),
+                                    listOfProducts));
                                 break;
                             }
                             case PrintSuboperationCodes.PrintByProduct:
                             {
                                 Console.WriteLine("Enter product's name");
                                 var name = Console.ReadLine();
-                                Console.WriteLine(ProductReferencesToString(ProductByName(listOfProducts, name), listOfOrders));
+                                Console.WriteLine(ProductReferencesToString(ProductByName(listOfProducts, name),
+                                    listOfOrders));
                                 break;
                             }
                             case PrintSuboperationCodes.PrintBack:
@@ -382,12 +373,14 @@ namespace SummerPractice1.Main
                             {
                                 listOfOrders.Add(new Order(i, listOfProducts));
                             }
+
                             Console.WriteLine("Loaded!");
                         }
                         catch (Exception)
                         {
                             Console.WriteLine("Error occured!");
                         }
+
                         break;
                     }
                     case OperationCodes.SaveToFile:
@@ -402,10 +395,10 @@ namespace SummerPractice1.Main
                             {
                                 ordersSaveData.Add(new OrderSave(i));
                             }
+
                             var json = JsonConvert.SerializeObject(new SaveData(listOfProducts, ordersSaveData));
                             sr.WriteLine(json);
                             Console.WriteLine("Saved!");
-                            
                         }
                         catch (Exception)
                         {
